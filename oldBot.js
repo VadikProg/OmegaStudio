@@ -1,4 +1,4 @@
-﻿const Discord = require("discord.js");
+const Discord = require("discord.js");
 const ytdl = require('ytdl-core');
 const client = new Discord.Client();
 client.login("NjE3MDMwNDA4NjA5MjAyMTk5.XWllQQ.PBswHbaMsyGnAdzTVSvpmzwvBnc"); //В кавычках вводим токен вашего бота. Пример: client.login("33535320424082");
