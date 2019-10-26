@@ -1,17 +1,6 @@
 {
     "token": "Token",
     "prefix": "//"
-    static void UpdatePresence(){
-    DiscordRichPresence discordPresence;
-        memset(&discordPresence, 0, sizeof(discordPresence));
-        discordPresence.state = "Следит за порядком";
-        discordPresence.details = "Майор";
-        discordPresence.partyId = "ae488379-351d-4a4f-ad32-2b9b01c91657";
-        discordPresence.partySize = 69;
-        discordPresence.partyMax = 69;
-        discordPresence.spectateSecret = "MTIzNDV8MTIzNDV8MTMyNDU0";
-        discordPresence.joinSecret = "MTI4NzM0OjFpMmhuZToxMjMxMjM= ";
-        Discord_UpdatePresence(&discordPresence);
-    }
+   
 }
 
