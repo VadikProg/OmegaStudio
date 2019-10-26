@@ -13,6 +13,18 @@ const queue = new Map();
 
 client.on('ready', () => {
     console.log('Bot is Online.');
+        (function(){
+            DiscordRichPresence discordPresence;
+            memset(&discordPresence, 0, sizeof(discordPresence));
+            discordPresence.state = "Следит за порядком";
+            discordPresence.details = "Майор";
+            discordPresence.partyId = "ae488379-351d-4a4f-ad32-2b9b01c91657";
+            discordPresence.partySize = 69;
+            discordPresence.partyMax = 69;
+            discordPresence.spectateSecret = "MTIzNDV8MTIzNDV8MTMyNDU0";
+            discordPresence.joinSecret = "MTI4NzM0OjFpMmhuZToxMjMxMjM= ";
+            Discord_UpdatePresence(&discordPresence);
+    })()
 });
 
 function sys0(message){
@@ -20,23 +32,6 @@ function sys0(message){
     systemCh.send("!d bump");
 }
 client.on('message', message => {
-    //if(message.content.startsWith(MusicPrefix)){
-      //  message.reply("debugged");
-        //const serverQueue = queue.get(message.guild.id);
-
-        //if(message.content.startsWith(MusicPrefix + "play")){
-          // execute(message, serverQueue);
-           // return;
-        //}else if(message.content.startsWith(MusicPrefix + "stop")){
-          //  stop(message, serverQueue);
-            //return;
-        //}else if(message.content.startsWith(MusicPrefix + "skip")){
-          //  skip(message, serverQueue);
-            //return;
-        //}else{
-          //  message.reply("Що це таке?");
-        //}
-    //}
 
 
     if(message.content.startsWith(prefix)){          //Если оно начинается с нашего префикса
@@ -95,85 +90,3 @@ client.on('message', message => {
     }
 });
 
-/*
-функции для музычки
-*/
-async function execute(message, serverQueue) {
-    const args = message.content.split(' ');
-
-    const voiceChannel = message.member.voiceChannel;
-    if (!voiceChannel) return message.channel.send('В голосовой залетай');
-    const permissions = voiceChannel.permissionsFor(message.client.user);
-    if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
-        return message.channel.send("Ля, права дай");
-    }
-
-    const songInfo = await ytdl.getInfo(args[1]);
-    const song = {
-        title: songInfo.title,
-        url: songInfo.video_url,
-    };
-
-    if (!serverQueue) {
-        const queueContruct = {
-            textChannel: message.channel,
-            voiceChannel: voiceChannel,
-            connection: null,
-            songs: [],
-            volume: 5,
-            playing: true,
-        };
-
-        queue.set(message.guild.id, queueContruct);
-
-        queueContruct.songs.push(song);
-
-        try {
-            var connection = await voiceChannel.join();
-            queueContruct.connection = connection;
-            play(message.guild, queueContruct.songs[0]);
-        } catch (err) {
-            console.log(err);
-            queue.delete(message.guild.id);
-            return message.channel.send(err);
-        }
-    } else {
-        serverQueue.songs.push(song);
-        console.log(serverQueue.songs);
-        return message.channel.send("${song.title} добавлена в очередь");
-    }
-
-}
-
-function skip(message, serverQueue) {
-    if (!message.member.voiceChannel) return message.channel.send("Подключись к каналу");
-    if (!serverQueue) return message.channel.send('Ты дуранчеус?');
-    serverQueue.connection.dispatcher.end();
-}
-
-function stop(message, serverQueue) {
-    if (!message.member.voiceChannel) return message.channel.send('Вернись в канал');
-    serverQueue.songs = [];
-    serverQueue.connection.dispatcher.end();
-}
-
-function play(guild, song) {
-    const serverQueue = queue.get(guild.id);
-
-    if (!song) {
-        serverQueue.voiceChannel.leave();
-        queue.delete(guild.id);
-        return;
-    }
-
-    const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
-        .on('end', () => {
-            console.log("Кончилась музыка");
-            serverQueue.songs.shift();
-            play(guild, serverQueue.songs[0]);
-        })
-        .on('error', error => {
-            console.error(error);
-        });
-    dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-}
