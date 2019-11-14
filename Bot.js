@@ -7,8 +7,8 @@ const prefix = config.prefix;
  //Main events
 	bot.on('ready', async() => {
 		  console.log(`Я готов`);
-		  let UserMy = await bot.fetchUser("298426205261266944");
-		  console.log(UserMy.username);
+		  //let UserMy = await bot.fetchUser("298426205261266944");
+		  //console.log(UserMy.username);
 	});
 	
 	bot.on(`message`, message =>{
@@ -54,8 +54,12 @@ const prefix = config.prefix;
 	  })
 
 
-	bot.on('GuildMemberAdd', member => {
-		const channel = member.guild.channels.find(ch => ch.name === `hello`);
-		channel.send(`Привет дорогой ${member}.
-		Мы ради приветствовать тебя на нашем сервере`);
-	})
+	  bot.on('guildMemberAdd', member => {
+		console.log("Вау новый юзер");
+		let channelVar = member.guild.channels.find(ch => ch.name === `hello`);
+
+		channelVar.send(`Мой кент ${member}`);
+		member.addRole(`640524288373555200`);
+
+		//member.guild.channels.get("638848933426233354").send("Welcome"); 
+	});
