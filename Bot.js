@@ -5,13 +5,12 @@ const config = require('./config.json');
 bot.login(config.token);
 const prefix = config.prefix;
  //Main events
-	bot.on('ready', () => {
-		  console.log(`Я готов`)
+	bot.on('ready', async() => {
+		  console.log(`Bot is online`);
 	});
 	
-	bot.on(`message`, message =>{
+	bot.on(`message`, async(message) =>{
 		if(message.author.bot) return undefined;
-		console.log("Опа, сообщение")
 		if(message.content.startsWith(prefix)){
 			
 			let arguments = message.content
@@ -22,6 +21,7 @@ const prefix = config.prefix;
 
 			if(command == "voice"){
 				if(arguments.join(" ")){
+					console.log(message)
 					message.guild.createChannel(`${arguments.join(" ")} : @${message.author.username}`,{type : "voice"})
 						.then(console.log)
   						.catch(console.error);	
@@ -31,22 +31,25 @@ const prefix = config.prefix;
 					message.reply(`Канал должен иметь имя`);
 				}
 			}
-
-			if(command == "find"){
-				const channelF = message.guild.channels.find(ch => ch.name === arguments.join(" "));
-				message.channel.send(channelF.id);
-			}
-
-
-
-
 		}
 
 	});
 
-
-	bot.on('GuildMemberAdd', member => {
-		const channel = member.guild.channels.find(ch => ch.name === `hello`);
-		channel.send(`Привет дорогой ${member}.
-		Мы ради приветствовать тебя на нашем сервере`);
+	bot.on('voiceStateUpdate', (oldMember, newMember) => {
+		let newUserChannel = newMember.voiceChannel
+		let oldUserChannel = oldMember.voiceChannel
+		if(oldUserChannel === undefined && newUserChannel !== undefined) {
+			console.log(`Connect ${newMember.id}`);
+		 } else if(newUserChannel === undefined){
+			console.log(`Leave ${oldMember}`);
+		 }
+		
 	})
+
+
+	bot.on('guildMemberAdd', member => {
+		let channelVar = member.guild.channels.find(ch => ch.name === config.greetCh);
+		channelVar.send(`Hello dear ${member}`);
+		let role = member.guild.roles.find(Role => Role.name === config.StartUserRole);
+		member.addRole(role);
+	});

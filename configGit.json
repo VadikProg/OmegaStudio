@@ -1,0 +1,6 @@
+{
+	"token": "Token",
+    "prefix": "!",
+    "greetCh": "hello",
+    "StartUserRole": ""
+}
